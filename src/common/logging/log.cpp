@@ -3,7 +3,6 @@
 
 #include "common/assert.h"
 #include "common/emulatorConfig.h"
-#include "common/stringUtils.h"
 
 #include <cstdio>
 #include <filesystem>
@@ -51,8 +50,9 @@ std::shared_ptr<spdlog::logger> MakeFileLogger(std::string                  name
 	}
 
 	// rotate_on_open matches the old truncate-on-open "fresh file each run" behavior.
+	// filename_t is a wide string on Windows. path.native() matches that.
 	auto sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(
-	    Common::PathToString(path), kMaxLogFileSize, kMaxLogFiles, true);
+	    path.native(), kMaxLogFileSize, kMaxLogFiles, true);
 	return MakeLogger(std::move(name), std::move(sink));
 }
 
